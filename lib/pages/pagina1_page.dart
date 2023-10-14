@@ -1,4 +1,7 @@
+import 'package:estados_cambios/block/usuario/usuario_cubit.dart';
+import 'package:estados_cambios/models/usuario.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Pagina1Page extends StatelessWidget {
   const Pagina1Page({super.key});
@@ -8,8 +11,16 @@ class Pagina1Page extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('PAge 1'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.read<UsuarioCubit>().borrarUsuario();
+            },
+            icon: Icon(Icons.exit_to_app),
+          )
+        ],
       ),
-      body: InformacionUsuario(),
+      body: BodyScaffold(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.accessibility_new),
 
@@ -21,10 +32,40 @@ class Pagina1Page extends StatelessWidget {
   }
 }
 
+class BodyScaffold extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UsuarioCubit, UsuarioState>(
+      builder: (_, state) {
+        print(state);
+
+        switch (state.runtimeType) {
+          case UsuarioInitial:
+            return Center(child: Text('No hay info del usussario'));
+
+          case (UsuarioActivo):
+            return InformacionUsuario((state as UsuarioActivo).usuario);
+
+          default:
+            return Center(child: Text('No reconocido'));
+        }
+        // if (state is UsuarioInitial) {
+        //   return Center(
+        //     child: Text('No hay info del usuario'),
+        //   );
+        // } else if (state is UsuarioActivo) {
+        //   return InformacionUsuario(state.usuario);
+        // } else {
+        //   return
+        // }
+      },
+    );
+  }
+}
+
 class InformacionUsuario extends StatelessWidget {
-  const InformacionUsuario({
-    super.key,
-  });
+  final Usuario usuario;
+  InformacionUsuario(this.usuario);
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +80,14 @@ class InformacionUsuario extends StatelessWidget {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           Divider(),
-          ListTile(title: Text('Nombre')),
-          ListTile(title: Text('Edad')),
+          ListTile(title: Text('nombre: ${usuario.nombre}')),
+          ListTile(title: Text('edad: ${usuario.edad}')),
           Text('Profesiones',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           Divider(),
-          ListTile(title: Text('Profesion 1')),
-          ListTile(title: Text('Profesion 2')),
-          ListTile(title: Text('Profesion 3')),
+          ...usuario.profesiones!
+              .map((profesion) => ListTile(title: Text(profesion)))
+              .toList()
         ],
       ),
     );
