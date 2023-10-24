@@ -14,6 +14,8 @@ class Pagina1Page extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
+              // En este caso, se utiliza context.read<UsuarioCubit>().borrarUsuario()
+              //para llamar al método borrarUsuario del cubit UsuarioCubit
               context.read<UsuarioCubit>().borrarUsuario();
             },
             icon: Icon(Icons.exit_to_app),
@@ -35,15 +37,22 @@ class Pagina1Page extends StatelessWidget {
 class BodyScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    //UsuarioCubit es el cubit , UsuarioState es el estado
+
+    //Crea un BlocBuilder que escucha el estado del cubit UsuarioCubit y se actualiza
+    //cada vez que el estado cambia. El primer argumento de BlocBuilder es el tipo de
+    //cubit que se está escuchando (UsuarioCubit) y el segundo argumento es una función
+    //builder que se ejecuta cada vez que el estado cambia.
     return BlocBuilder<UsuarioCubit, UsuarioState>(
+      //Define una función anónima que toma dos argumentos, pero solo usa el segundo
+      //argumento, state, que representa el estado actual del cubit.
       builder: (_, state) {
         print(state);
-
+//El tipo de tiempo de ejecución es una forma de determinar la clase o tipo de un objeto en tiempo de ejecución.
         switch (state.runtimeType) {
-          case UsuarioInitial:
+          case UsuarioInicial: // class UsuarioInicial extends UsuarioState { final existeUsuario = false; }
             return Center(child: Text('No hay info del usussario'));
-
-          case (UsuarioActivo):
+          case (UsuarioActivo): //class UsuarioActivo extends UsuarioState { final existeUsuario = true;}
             return InformacionUsuario((state as UsuarioActivo).usuario);
 
           default:

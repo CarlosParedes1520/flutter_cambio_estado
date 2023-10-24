@@ -5,6 +5,8 @@ class Usuario {
 
   Usuario({this.nombre, this.edad, this.profesiones});
 
+
+//metodo que devuelve un usuario nuevo
   Usuario copyWith({
     String? nombre,
     int? edad,
